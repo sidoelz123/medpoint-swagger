@@ -1,0 +1,390 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Medpoint System - OpenAPI",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8002"
+    },
+    {
+      "url": "https://jnrhkghkqxlqjxnxczaw.supabase.co"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "apikey"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [{ "ApiKeyAuth": [] }],
+  "paths": {
+    "/auth/v1/token?grant_type=password": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign In Users",
+        "security": [{ "ApiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signin success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/v1/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign Up for new user",
+        "security": [{ "ApiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "first_name": { "type": "string" },
+                      "last_name": { "type": "string" },
+                      "phone_number": { "type": "string" },
+                      "date_of_birth": {
+                        "type": "string",
+                        "default": "YYYY-MM-DD"
+                      },
+                      "address": { "type": "string" }
+                    }
+                  }
+                },
+                "required": ["email", "password", "data"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sign Up Success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      }
+    },
+    "/rest/v1/doctors?select=*": {
+      "get": {
+        "tags": ["Data Dokter"],
+        "summary": "Get All doctor data",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "List doctor"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      }
+    },
+    "/rest/v1/doctors": {
+      "get": {
+        "tags": ["Data Dokter"],
+        "summary": "Get Doctor Data by ID",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "eq.{doctorid}"
+            },
+            "description": "ID dokter yang ingin diambil"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GET Doctor Data by ID success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Data Dokter"],
+        "summary": "Add doctor data",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": { "type": "string" },
+                  "specialist": { "type": "string" },
+                  "license_number": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "add user doctor success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Data Dokter"],
+        "summary": "Update Doctor data by id",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "eq.{doctorid}"
+            },
+            "description": "ID dokter yang ingin diambil"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "specialist": { "type": "string" },
+                  "license_number": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "update user doctor success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Data Dokter"],
+        "summary": "Delete Doctor data by id",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "eq.{doctorid}"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "delete user doctor success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      }
+    },
+    "/rest/v1/schedules?select=*": {
+      "get": {
+        "tags": ["Data Jadwal"],
+        "summary": "GET All schedule data",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "List jadwal"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      }
+    },
+    "/rest/v1/schedules": {
+      "get": {
+        "tags": ["Data Jadwal"],
+        "summary": "Get schedule data by id",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "eq.{schedule_id}"
+            },
+            "description": "ID dokter yang ingin diambil"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get schedule data by id success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Data Jadwal"],
+        "summary": "add schedule data",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "doctor_id": { "type": "string" },
+                  "date": { "type": "string" },
+                  "start_time": { "type": "string" },
+                  "end_time": { "type": "string" },
+                  "slot_count": { "type": "string" },
+                  "slot_filled": { "type": "string" },
+                  "status": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "add schedule data success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Data Jadwal"],
+        "summary": "update schedule data by id",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "eq.{schedule_id}"
+            },
+            "description": "ID dokter yang ingin diambil"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "doctor_id": { "type": "string" },
+                  "date": { "type": "string" },
+                  "start_time": { "type": "string" },
+                  "end_time": { "type": "string" },
+                  "slot_count": { "type": "string" },
+                  "slot_filled": { "type": "string" },
+                  "status": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "update schedule data by id success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Data Jadwal"],
+        "summary": "Delete schedule data by id",
+        "security": [{ "ApiKeyAuth": [] }, { "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "eq.{schedule_id}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete schedule by id success"
+          },
+          "401": {
+            "description": "Unauthorized - Token is invalid or not included"
+          }
+        }
+      }
+    }
+  }
+}
